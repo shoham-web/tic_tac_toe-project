@@ -2,17 +2,20 @@ import random
 board = [1,2,3,4,5,6,7,8,9]
 def print_board(board):
     for i in range(len(board)):
+        place = board[i]
+        if isinstance(place, int):
+            place = " "
         if (i+1) % 3 != 0:
-            print(board[i], end=" | ")
+            print(place, end=" | ")
         if (i+1) % 3 == 0:
-            print(board[i])
+            print(place)
             if i != len(board)-1:
                 print("----------")
     return board
 
 def player_symbol_choose():
     symbols = ["X", "O"]
-    name = input("welcome to the game, please enter your name:")
+    name = input("welcome to the game, please enter your name: ")
     while True:
         try:
             symbol_choose = input(f"Hello {name}, welcome to TIC-TAC-TOE,please enter your symbol: X or O, press R for random: ")
@@ -25,6 +28,7 @@ def player_symbol_choose():
         if symbol_choose.lower() == "r":
             random.shuffle(symbols)
             symbol_choose = symbols[0]
+            print(f"Your symbol is {symbol_choose}")
         return symbol_choose
 
 def player_symbol_place(symbol_choose,board):
@@ -56,12 +60,37 @@ def check_winner(board):
 
     return False
 
+def play_vs_computer(board,computer_symbol):
+    empty_place =[]
+    for idx,value in enumerate(board):
+        if isinstance(value,int):
+            empty_place.append(idx)
+    if empty_place:
+        computer_choice = random.choice(empty_place)
+        print(f"the computer chose to place on index {board[computer_choice]}, your turn:")
+        board[computer_choice] = computer_symbol
+
+
+
+
 def play_game(board,symbol_choose):
     while True:
         current_player = symbol_choose
+        computer_symbol = "O" if current_player == "X" else "X"
+
+        while True:
+            mode_select = input("Choose mode: 1.player vs player 2. player vs computer: ")
+            if mode_select in ("1", "2"):
+                break
+            print("please enter either 1 or 2")
+
         while True:
             print_board(board)
-            player_symbol_place(current_player, board)
+            if mode_select == "2" and current_player == computer_symbol:
+                play_vs_computer(board, current_player)
+            else:
+                player_symbol_place(current_player,board)
+
             if check_winner(board):
                 print_board(board)
                 print(f"[{current_player}] is the winner!")
@@ -75,9 +104,11 @@ def play_game(board,symbol_choose):
                 print("Tie")
                 break
             if current_player == "X":
-                    current_player = "O"
+                current_player = "O"
             else:
                 current_player = "X"
+
+
         while True:
             play_again = input("would you like to play again?,(Y/N): ")
             if play_again.lower() == "y":
@@ -88,7 +119,9 @@ def play_game(board,symbol_choose):
             else:
                 print("please enter y or n")
                 continue
-##bonus
+
+
+
 
 
 
