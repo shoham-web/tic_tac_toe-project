@@ -11,14 +11,19 @@ def print_board(board):
             print(place)
             if i != len(board)-1:
                 print("----------")
-    return board
 
-def player_symbol_choose():
+
+def get_player_name(message):
+    while True:
+        name = input(message)
+        if name:
+            return name
+
+def player_symbol_choose(name):
     symbols = ["X", "O"]
-    name = input("welcome to the game, please enter your name: ")
     while True:
         try:
-            symbol_choose = input(f"Hello {name}, welcome to TIC-TAC-TOE,please enter your symbol: X or O, press R for random: ")
+            symbol_choose = input(f"Hello {name}, please choose your symbol: X or O, press R for random: ")
             symbol_choose = symbol_choose.upper()
             if symbol_choose not in symbols and symbol_choose.lower() != "r":
                 raise Exception("please enter a valid symbol")
@@ -28,12 +33,13 @@ def player_symbol_choose():
         if symbol_choose.lower() == "r":
             random.shuffle(symbols)
             symbol_choose = symbols[0]
-            print(f"Your symbol is {symbol_choose}")
+            print(f"{name}, your symbol is {symbol_choose}")
         return symbol_choose
 
-def player_symbol_place(symbol_choose,board):
+def player_symbol_place(symbol_choose,board,name):
     while True:
         try:
+            print(f"{name} ({symbol_choose}), your turn!")
             symbol_place = int(input("please enter a position to place your symbol:"))
         except ValueError as e:
             print("please enter a valid number")
@@ -46,8 +52,6 @@ def player_symbol_place(symbol_choose,board):
             continue
         board[symbol_place-1] = symbol_choose
         break
-    if check_winner(board):
-        return
 
 def check_winner(board):
     winning_rows = [[board[0], board[1], board[2]],[board[3], board[4], board[5]],[board[6], board[7], board[8]]]
@@ -73,27 +77,41 @@ def play_vs_computer(board,computer_symbol):
 
 
 
-def play_game(board,symbol_choose):
+def play_game(board):
     while True:
-        current_player = symbol_choose
-        computer_symbol = "O" if current_player == "X" else "X"
-
+        print("Hello, welcome to TIC-TAC-TOE! ")
         while True:
-            mode_select = input("Choose mode: 1.player vs player 2. player vs computer: ")
+            mode_select = input("Choose mode,\n1). player vs player 2). player vs computer: ")
             if mode_select in ("1", "2"):
                 break
             print("please enter either 1 or 2")
 
+        if mode_select == "1":
+            player_name1 = get_player_name("Enter player 1 name: ")
+            player_name2 = get_player_name("Enter player 2 name: ")
+        else:
+            player_name1 = get_player_name("Enter your name: ")
+            player_name2 = "computer"
+        symbol_choose = player_symbol_choose(player_name1)
+        current_player = symbol_choose
+        computer_symbol = "O" if current_player == "X" else "X"
         while True:
             print_board(board)
             if mode_select == "2" and current_player == computer_symbol:
                 play_vs_computer(board, current_player)
             else:
-                player_symbol_place(current_player,board)
+                if current_player == symbol_choose:
+                    current_name = player_name1
+                else:
+                    current_name = player_name2
+                player_symbol_place(current_player,board,current_name)
 
             if check_winner(board):
                 print_board(board)
-                print(f"[{current_player}] is the winner!")
+                if current_player == symbol_choose:
+                    print(f"{player_name1} is the winner!")
+                else:
+                    print(f"{player_name2} is the winner!")
                 break
             tie = True
             for number in board:
@@ -127,5 +145,4 @@ def play_game(board,symbol_choose):
 
 
 if __name__ == "__main__":
-    symbol = player_symbol_choose()
-    play_game(board, symbol)
+    play_game(board)
