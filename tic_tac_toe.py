@@ -141,8 +141,5 @@ def play_game(board):
 
 
 
-
-
-
 if __name__ == "__main__":
     play_game(board)
