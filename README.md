@@ -1,4 +1,4 @@
- ﻿# tic_tac_toe-project
+ ﻿# Tic_Tac_Toe project
 
 ## Features
 - Player vs Player mode
@@ -8,10 +8,10 @@
 
   #NOT FOR GRADING#
   
- ﻿# tic_tac_toe-project(OOP)
+ ﻿# Tic_Tac_Toe project(OOP)
 wanted to try OOP just for extra practice and be ready when we will learn that in the course.
 
-## Features
+## Project Structure
 Board class
 - Manages the game board
 - Checks win and tie conditions
@@ -27,6 +27,7 @@ PlayComputer class
 Game class
 - Controls the game loop
 - Handles game modes and turn switching
+
 
 
 
