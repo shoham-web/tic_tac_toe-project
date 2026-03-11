@@ -1,5 +1,4 @@
 import random
-from operator import truediv
 
 
 class Board:
@@ -53,6 +52,7 @@ class Player:
             if not (0<= position <=8):
                 print("please enter a number between 1 and 9")
                 continue
+
             if not board.is_move_valid(position):
                 print("The position you entered is Taken,please try again")
                 continue
@@ -63,6 +63,7 @@ class Player:
         while True:
             symbol_choose = input("Choose a symbol (X/O) press R for random: ")
             symbol_choose = symbol_choose.upper()
+
             if not symbol_choose in ["X","O","R"]:
                 print("please enter a valid symbol")
                 continue
@@ -79,27 +80,50 @@ class Player:
         self.symbol = "X" if self.symbol == "O" else "O"
         return self.symbol
 
+class PlayComputer(Player):
+
+    def get_move(self,board):
+        empty_place = []
+        for idx, cell in enumerate(board.cells):
+            if board.is_move_valid(idx):
+                empty_place.append(idx)
+        computer_choice = random.choice(empty_place)
+        print(f"the computer chose to place on index {computer_choice+1}, your turn:")
+        return computer_choice
+
 
 class Game:
     def __init__(self):
         self.board = Board()
         print("Hello, welcome to TIC-TAC-TOE! ")
-        player1_name = input("Enter player 1 name: ")
-        player2_name = input("Enter player 2 name: ")
-        self.player1 = Player(player1_name,None)
-        self.player2 = Player(player2_name,None)
-        self.current_player = self.player1
+        while True:
+            mode_select = input("Choose mode,\n1). player vs player 2). player vs computer: ")
+            if mode_select in ["1","2"]:
+                break
+            print("please enter either 1 or 2")
+
+        if mode_select == "1":
+            player1_name = input("Enter player 1 name: ")
+            player2_name = input("Enter player 2 name: ")
+            self.player1 = Player(player1_name,None)
+            self.player2 = Player(player2_name,None)
+            self.current_player = self.player1
+        else:
+            player1_name = input("Enter player 1 name: ")
+            self.player1 = Player(player1_name, None)
+            self.player2 = PlayComputer("Computer", None)
+            self.current_player = self.player1
 
         self.player1.choose_symbol()
         print(f"{self.player1.name} will be {self.player1.symbol}")
 
         self.player2.symbol = self.player1.symbol
         self.player2.switch_symbol()
+
         print(f"{self.player2.name} will be {self.player2.symbol}")
 
     def switch_player(self):
         self.current_player = self.player2 if self.current_player == self.player1 else self.player1
-        return self.current_player
 
     def game_loop(self):
         while True:
@@ -108,6 +132,7 @@ class Game:
                 print(f"{self.current_player.name}'s turn ({self.current_player.symbol})")
                 position = self.current_player.get_move(self.board)
                 self.board.make_move(position, self.current_player.symbol)
+
                 if self.board.check_win():
                     self.board.display()
                     print(f"{self.current_player.name} won the game")
